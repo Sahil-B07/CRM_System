@@ -84,14 +84,17 @@ WSGI_APPLICATION = "fatmug.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 import os
+from dotenv import load_dotenv
+
+load_dotenv('.env')
 
 DATABASES = {
 'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': os.environ.get('PG_USER', 'postgres'),
-        'PASSWORD': os.environ.get('PG_PASSWORD', 'postgres'),
-        'HOST': 'db',
+        'NAME': os.getenv('PG_NAME'),
+        'USER': os.getenv('PG_USER'),
+        'PASSWORD': os.getenv('PG_PASSWORD'),
+        'HOST': os.getenv('PG_HOST'),
         'PORT': '5432',
     }
 }
