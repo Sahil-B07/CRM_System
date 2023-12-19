@@ -88,4 +88,4 @@ Now test the endpoints:
 
 ## Demo 
 
-[Demo](assets/demonstration.mp4)
+[Demo](assets/demonstration.gif)
