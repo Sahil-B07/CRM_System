@@ -1,7 +1,7 @@
 def onTimeDelivery(vendors_purchase_orders, pk, models):
     total_completed_POs = vendors_purchase_orders.filter(
         vendor_id=pk, status='Completed').count()
-    completed_POs = vendors_purchase_orders.filter(
+    completed_POs = vendors_purchase_orders.filter(vendor_id=pk).filter(
         models.Q(date_updated__lte=models.F('delivery_date'))).count()
 
     try:
@@ -15,6 +15,7 @@ def onTimeDelivery(vendors_purchase_orders, pk, models):
 def qualityRate(vendors_purchase_orders, pk, models, metrics):
     quality_rating__avg = vendors_purchase_orders.filter(vendor_id=pk).aggregate(
         models.Avg('quality_rating'))['quality_rating__avg']
+    
     return quality_rating__avg
 
 
