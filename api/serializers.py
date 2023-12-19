@@ -21,7 +21,7 @@ class POSerializer(serializers.HyperlinkedModelSerializer):
 class PurchaseOrderUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PurchaseOrder
-        fields = ['status']
+        fields = ['status','quality_rating']
 
 class AcknowledgmentUpdateSerializer(serializers.ModelSerializer):
     class Meta:
