@@ -16,16 +16,26 @@ class VendorViewSet(viewsets.ModelViewSet):
         vendor = Vendor.objects.filter(pk=pk).first()
         vendors_purchase_orders = PurchaseOrder.objects
 
-        on_time_delivery = onTimeDelivery(vendors_purchase_orders, pk, models)
-        quality_rate = qualityRate(
-            vendors_purchase_orders, pk, models, Metrics)
-        avg_response_time = avgResponseTime(
-            vendors_purchase_orders, pk, models)
-        fulfilment_rate = fulfilmentRate(vendors_purchase_orders, pk)
+        try:
+            on_time_delivery = onTimeDelivery(vendors_purchase_orders, pk, models)
+            quality_rate = qualityRate(
+                vendors_purchase_orders, pk, models, Metrics)
+            avg_response_time = avgResponseTime(
+                vendors_purchase_orders, pk, models)
+            fulfilment_rate = fulfilmentRate(vendors_purchase_orders, pk)
+        except:
+            return response.Response({'Message':'No Purchase Order(s) found for this Vendor!'})
 
         metrics_instance, created = Metrics.objects.update_or_create(
             vendor=vendor,
-            defaults={'vendor': vendor, 'on_time_delivery_rate': on_time_delivery, 'quality_rating_avg': quality_rate,
+            defaults={'on_time_delivery_rate': on_time_delivery, 'quality_rating_avg': quality_rate,
+                      'average_response_time': avg_response_time, 'fulfilment_rate': fulfilment_rate}
+        )
+
+        # also update the initial/recent vendors records created/updated
+        Vendor.objects.update_or_create(
+            id=pk,
+            defaults={'on_time_delivery_rate': on_time_delivery, 'quality_rating_avg': quality_rate,
                       'average_response_time': avg_response_time, 'fulfilment_rate': fulfilment_rate}
         )
 
@@ -53,8 +63,6 @@ class PurchaseOrderViewSet(viewsets.ModelViewSet):
             serializer = AcknowledgmentUpdateSerializer(instance, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-
-                VendorViewSet.performance(self,request=request,pk=instance.vendor.id)
                 return response.Response(serializer.data)
             else:
                 return response.Response(serializer.errors, status=response.status.HTTP_400_BAD_REQUEST)
