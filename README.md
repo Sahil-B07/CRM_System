@@ -85,6 +85,47 @@ Now test the endpoints:
 - POST/PUT `/api/purchase_orders/{po_id}/acknowledge`
 
 
+> **Note**\
+1.For update purchase order only 2 fields are changable ( status and quality_rating ). We can change as per the requirements.
+
+## Features
+- Token Authentication
+- Django Signals
+
+
+To use token authentication 
+
+1. Create a superuser:
+
+```bash
+python manage.py createsuperuser
+```
+
+2. Uncomment the lines in settings.py
+
+```bash
+REST_FRAMEWORK = {
+   'DEFAULT_PERMISSION_CLASSES': [
+         # 'rest_framework.permissions.IsAuthenticated'
+      ],
+      'DEFAULT_AUTHENTICATION_CLASSES': [
+         # 'rest_framework.authentication.TokenAuthentication',
+      ]
+}
+```
+
+```bash
+INSTALLED_APPS = [
+    #...
+    # 'rest_framework.authtoken'
+]
+```
+
+after creating a superuser you can create any staff user using django admin panal login `http://127.0.0.1:8000/admin/`, and a token will be generated automatically for that user.
+
+Now use that token in a request header as "Authentication: Token a91b3d20afa11949563c2bdc2ed7702e5637fxzy":
+
+![](assets/auth_token.png)
 
 ## Demo 
 
